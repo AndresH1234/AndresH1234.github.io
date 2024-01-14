@@ -1,0 +1,1891 @@
+﻿JNS 		print_IngresaS
+					Input
+					ADD   		seed
+					Store 		seed
+					JnS 		print_veces
+					Input
+					ADD   		Size
+					Store 		Size
+					JnS 		print_empezo
+NewJueg, 			JnS 		print_juegos		/Guardar el valor
+					load		JUEGOSU
+					add			ONE
+					store 		JUEGOSU
+					Load 		ONE
+					Store		POSITION
+					Load 		ZERO
+					STORE 		TIROS
+					Store 		CENTENAT
+NewVal, 			JNS			NUMAL
+					load		TIROS
+					add			ONE
+					store 		TIROS
+					STORE 		AUXT
+					Load 		Enter
+					Output
+					JnS			print_Lanzamiento
+					Load        Space
+					Output
+					JnS			print_Dado
+					Load		POSITION
+                    Store 		AUXI
+                    Subt 		CIEN
+					Skipcond 	000
+                    JNS			print_Cien1
+  					LOAD		AUXI
+					Store 		Temp
+					Store 		Divid
+					JNS 		separacionI
+					Load 		DECENA
+					Add 		ZERO_A
+					Store 		DECENA
+					Output
+					Load 		UNIDAD
+					Add 		ZERO_A
+					Store 		UNIDAD
+					Output
+					Load 		POSITION
+					ADD 		NumDados
+					Store 		POSITION
+                    Store 		AUXF				/ jns print_line  jns separa	ionF
+					jns 		print_line
+					Load		POSITION
+                    Subt 		CIEN
+					Skipcond 	000
+                    JNS 		print_Cien2
+					Load 		AUXF
+					Store 		TempF
+					Store 		DividF
+					JNS 		separacionF			/ Print posicion final
+					Load 		DECENAF
+					Add 		ZERO_A
+					Store 		DECENAF
+					Output
+					Load 		UNIDADF
+					Add 		ZERO_A
+					Store 		UNIDADF
+					Output
+If,					Load		POSITION
+					Subt		CIEN				/Subtract the value of Y, store result in AC, AC <- AC-M[Y]
+					Skipcond  	400					/If AC = 0
+					Jump		ElseIf
+Then, 				JnS			print_ganaste
+					JnS			print_termino		/xd
+					Load 		CENTENAT
+                    Add 		ZERO_A
+                    Output
+                    Load 		DECENAT
+                    Add 		ZERO_A
+                    Output
+                    Load 		UNIDADT
+                    Add 		ZERO_A
+                    Output
+					jump  		While 				/seguir con el siguiente juego
+ElseIf,				Load 		POSITION
+					Subt		CIEN				/Subtract X from Y
+					Skipcond  	800					/If AC > 0
+					Jump		Else
+Then_elseIf,		Load  		POSITION 			/ guarda el sobrante de haberse pasado
+					Subt  		CIEN 				/ le resta 100 para encontrar la posicion
+					store 		sobrante
+					load  		CIEN
+					subt  		sobrante
+					store 		POSITION
+					load		POSITION				/ volvemos a NewVal para que se vuelva a tirar el dado
+Else,				Load		POSITION			/Start the else part by loading 
+Cond,				LOAD		COUNT				/ LOAD count into AC
+					SUBT		ORIGEN				/ SUBTRACT array[0] from AC
+					SKIPCOND	000					/ Skipcond 000 if AC < 0
+					JUMP		End					/ JUMP to End
+Loop,				LOAD		COUNT				/ LOAD Count into AC
+					ADD			ONE					/ ADD ONE to AC
+					STORE		COUNT				/ STORE AC into COUNT
+					LOADI		INDEX				/ LOAD MEM[index] into AC
+					STORE		ORIGEN_I			/ Meter el valor de la posicion del arreglo
+					JnS			COMPARE				/ To COMPARE
+					LOAD		INDEX
+					ADD			ONE
+					STORE		INDEX
+                    Jump 		Cond
+End,				LOAD		START				/ LOAD start into AC
+					STORE		INDEX
+                    Load 		ZERO				/ STORE AC into index
+                    Store 		COUNT
+Endif,				jump 		NewVal				/Terminate program escribir numero de lanzadas y mandar arriba
+While,				Load 		JUGADA
+					Add 		ONE 
+					store     	JUGADA
+        			subt      	Size	  			/ compute x - toobig
+        			skipcond  	400       			/ if AC=0 then x ok 
+        			jump      	NewJueg   			/ otherwise go back and try again
+					halt
+print_empezo,		Hex 		9					/--------------------> Editar memoria .-.
+Getch_empezo,		LoadI	    Chptr_empezo		/ Load the character found at address chptr.
+					Skipcond  	400					/ If the character is a null, we are done.
+					Jump	    Outp_empezo		/ Otherwise, proceed with operation.
+                    Load 		Start_empezo
+					Store		Chptr_empezo
+					JUMPI	    print_empezo	
+Outp_empezo,		Output							/ Output the character.
+					Load	    Chptr_empezo		/ Move pointer to next character.
+					Add	    	ONE		
+					Store	    Chptr_empezo
+					Jump	    Getch_empezo
+Chptr_empezo,		Hex 		87					/--------------------> Editar memoria .-.
+Start_empezo,		Hex			87	
+EMPEZO,				Dec 		069  				/ E
+					Dec 		109  				/ m
+					Dec 		112  				/ p
+					Dec 		101  				/ e
+					Dec 		122  				/ z
+        			Dec 		111  				/ o
+					Dec 		032  				/ [space]
+        			Dec 		101  				/ e
+        			Dec 		108  				/ l
+        			Dec 		032  				/ [space]
+        			Dec 		106  				/ j
+        			Dec 		117  				/ u
+        			Dec 		101  				/ e
+        			Dec 		103  				/ g
+        			Dec 		111  				/ o
+					Dec 		000  				/ [null]
+print_line, 		Hex 		33					/--------------------> Editar memoria .-.
+Getch, 				LoadI	    Chptr_line			/ Load the character found at address chptr.
+					Skipcond    400					/ If the character is a null, we are done.
+					Jump	    Outp				/ Otherwise, proceed with operation.
+    				Load    	start_Linea
+					store 	   	Chptr_line
+    				JumpI 		print_line
+Outp,				Output							/ Output the character.
+					Load	    Chptr_line			/ Move pointer to next character.
+					Add		    ONE		
+					Store	    Chptr_line
+					Jump	    Getch
+Chptr_line, 		Hex			A5 					/-----------------> Editar Memoria ,-,
+start_Linea, 		Hex 		A5
+String,				Hex			2D  				
+					Hex			2D  				
+					Hex			2D  				
+					Hex			2D  				 
+					Hex			2D  				
+					Hex			2D  	
+					Hex			2D  				
+					Hex			2D 				
+					Hex			2D  				
+					Hex			2D  				
+    				Hex			2D
+    				Hex			2D
+    				Hex			2D
+    				Hex			2D
+    				Hex			2D
+					Dec			000  / [null]
+print_termino,		Hex 		49					/--------------------> Editar memoria .-.
+Getch_temino,		LoadI		Chptr_termino
+					Skipcond  	400					/ If the character is a null, we are done.
+					Jump	    Outp_temino
+                    Load	    Start_termino		/ Load the character found at address chptr.
+					Store		Chptr_termino		/ Otherwise, proceed with operation.
+					JUMPI	    print_termino	
+Outp_temino,		Output						/ Output the character.
+					Load	    Chptr_termino		/ Move pointer to next character.
+					Add	    	ONE			
+					Store	    Chptr_termino	
+					Jump	    Getch_temino	
+Chptr_termino,		Hex 		C3
+Start_termino,		Hex			C3					/--------------------> Editar memoria .-.
+TERMINO,			Dec			10					/Nueva Linea
+					Dec 		76 					/ L
+					Dec 		97 					/ a
+					Dec         110				 	/ n
+					Dec         122				 	/ z
+					Dec         97				 	/ a
+					Dec         109				 	/ m
+					Dec         105				 	/ i
+					Dec         101				 	/ e
+					Dec         110				 	/ n
+					Dec         116				 	/ t
+					Dec         111				 	/ o
+					Dec         115				 	/ s
+					Dec         32				 	/ [space]
+					Dec         112				 	/ p
+					Dec         97				 	/ a
+					Dec         114				 	/ r
+					Dec         97				 	/ a
+					Dec         32				 	/ [space]
+					Dec         103				 	/ g
+					Dec         97				 	/ a
+					Dec         110				 	/ n
+					Dec         97				 	/ a
+					Dec         114				 	/ r
+					Dec         58				 	/ :
+					Dec         32				 	/ [space]
+					Dec 		000  				/ [null]
+print_ganaste,		Hex 		48					/--------------------> Editar memoria .-.
+Getch_ganaste,		LoadI	    Chptr_ganaste		/ Load the character found at address chptr.
+					Skipcond  	400					/ If the character is a null, we are done.
+					Jump	    Outp_ganaste		/ Otherwise, proceed with operation.
+					Load		start_ganaste
+					store		Chptr_ganaste
+					JUMPI	    print_ganaste	
+Outp_ganaste,		Output							/ Output the character.
+					Load	    Chptr_ganaste		/ Move pointer to next character.
+					Add	    	ONE			
+					Store	    Chptr_ganaste	
+					Jump	    Getch_ganaste	
+Chptr_ganaste,		Hex 		EC      			/--------------------> Editar memoria .-.
+start_ganaste,		Hex         EC
+GANASTE,			Dec         32                  /Espacio
+					Dec         40                  /(
+					Dec			70					/F
+					Dec			105					/i
+					Dec			110					/n
+					Dec			41					/)
+					Dec 		000  				/ [null]
+print_Dado, 		Hex 		1D					/--------------------> Editar memoria .-.
+Getch_Dado,			LoadI	    Chptr_Dado			/ Load the character found at address chptr.
+					Skipcond  	400					/ If the character is a null, we are done.
+					Jump	    Outp_Dado			/ Otherwise, proceed with operation.
+    				Load 		NumDados
+					Add			ZERO_A
+					Output
+					LOAD 		DADO
+					Output
+					Load 		Space
+					Output
+					Load		start_Dado
+					store		Chptr_Dado	
+					JumpI 		print_Dado	
+Outp_Dado,			Output							/ Output the character.
+					Load	    Chptr_Dado			/ Move pointer to the next character.
+					Add	    	ONE			
+					Store	    Chptr_Dado	
+					Jump	    Getch_Dado	
+Chptr_Dado, 		Hex			108					/--------------------> Editar memoria .-.
+start_Dado,			Hex			108
+DADO,				Dec			44  				/ ,
+					Dec			032  				/ [space]
+					Dec			068  				/ D
+					Dec			097  				/ a
+					Dec			100  				/ d
+					Dec			111  				/ o
+					Dec			032  				/ [space]
+					Dec			061  				/ =
+    				Dec			032  				/ [space]
+					Dec			000  				/ [null]
+print_IngresaS, 	Hex 		1					/--------------------> Editar memoria .-.
+Getch_IngresaS,		LoadI	    Chptr_IngresaS		/ Load the character found at address chptr.
+					Skipcond  	400					/ If the character is a null, we are done.
+					Jump	    Outp_IngresaS		/ Otherwise, proceed with operation.
+					Load		start_IngresaS
+					store		Chptr_IngresaS
+					JUMPI	    print_IngresaS
+Outp_IngresaS,		Output							/ Output the character.
+					Load	    Chptr_IngresaS		/ Move pointer to next character.
+					Add	    	ONE			
+					Store	    Chptr_IngresaS	
+					Jump	    Getch_IngresaS
+Chptr_IngresaS,		Hex 		120					/--------------------> Editar memoria .-.
+start_IngresaS,		Hex			120
+INGRESA,			Dec			73  				/ I
+					Dec			110  				/ n
+					Dec			103  				/ g
+					Dec			114  				/ r
+					Dec			101  				/ e
+					Dec			115  				/ s
+					Dec			097  				/ a
+					Dec			114  				/ r
+					Dec			032  				/ [space]
+					Dec			108  				/ l
+					Dec			097  				/ a
+					Dec			032  				/ [space]
+					Dec			115  				/ s
+					Dec			101  				/ e
+					Dec			109  				/ m
+					Dec			105  				/ i
+					Dec			108  				/ l
+					Dec			108  				/ l
+					Dec			097  				/ a
+					Dec			058  				/ :
+					Dec			032  				/ [space]
+					Dec			000  				/ [null]
+print_veces, 		Hex 		5					/--------------------> Editar memoria .-.
+Getch_veces,		LoadI	    Chptr_veces			/ Load the character found at address chptr.
+					Skipcond  	400					/ If the character is a null, we are done.
+					Jump	    Outp_veces			/ Otherwise, proceed with operation.
+					Load		start_veces
+					store		Chptr_veces
+					JUMPI	    print_veces
+Outp_veces,			Output							/ Output the character.
+					Load	    Chptr_veces			/ Move pointer to next character.
+					Add	    	ONE			
+					Store	    Chptr_veces	
+					Jump	    Getch_veces
+start_veces,		Hex			144
+Chptr_veces,		Hex 		144					/--------------------> Editar memoria .-.
+VECES,				Dec			010  				/ [Enter]
+					Dec			073  				/ I
+					Dec			110  				/ n
+					Dec			103  				/ g
+					Dec			114  				/ r
+					Dec			101  				/ e
+					Dec			115  				/ s
+					Dec			097  				/ a
+					Dec			114  				/ r
+					Dec			032  				/ [space]
+					Dec			101  				/ e
+					Dec			108  				/ l
+					Dec			032  				/ [space]
+					Dec			110  				/ n
+					Dec			117  				/ u
+					Dec			109  				/ m
+					Dec			101  				/ e
+					Dec			114  				/ r
+					Dec			111  				/ o
+					Dec			032  				/ [space]
+					Dec			100  				/ d
+					Dec			101  				/ e
+					Dec			032  				/ [space]
+					Dec			118  				/ v
+					Dec			101  				/ e
+					Dec			099  				/ c
+					Dec			101  				/ e
+					Dec			115  				/ s
+					Dec			058  				/ :
+					Dec			032  				/ [space]
+					Dec			000  				/ [null]
+print_Lanzamiento,  HEX 		1A					/--------------------> Editar memoria .-.
+Ifirst, 			Load 		AUXT
+					Subt 		CIEN
+					Skipcond 	000
+					JNS			print_centena
+					LOAD 		AUXT
+					Store 		TempT
+					Store 		DividT
+LoopT,				Load 		TempT				/ load the value of the working dividend
+					Subt 		DivisT				/ subtract the divisor
+					Store		TempT				/ store our new value for our working dividend
+					Skipcond 	800					/ if temp is still positive skip next
+					Jump		OutT					/ go print result
+					Load		QuotT				/ load our quotient
+					Add			ONE					/ add one to the quotient
+					Store		QuotT				/ store it again
+					Jump 		LoopT				/ run through the loop again
+OutT,				Load		TempT				/ Load our working dividend
+					Skipcond 	400					/ if it is equal to zero skip next line
+					Jump		OddT					/ Jump to our output for evenly divisible number
+					Jump 		EvenT				/ Jump to the print out section
+EvenT,				Load		QuotT				/ We got an evenly divisible number, load quotient
+					Add			ONE					/ Have to add one since we missed one in our loop above
+    				STORE 		DECENAT
+					Load 		ZERO
+    				STORE 		UNIDADT
+					Jump		EndPOSITIONT		/ exit
+OddT,				Load 		QuotT				/ load our quotient
+					Store 		DECENAT 
+					Load 		TempT				/ load our remainder
+					Add 		DivisT				/ remainder is negative, add back the divisor to get correct value
+					STORE 		UNIDADT
+EndPOSITIONT,		Load 		ZERO
+					Store 		QuotT
+					Store 		LCVT
+Getch_lanzamiento,	LoadI		Chptr_lanzamiento
+					Skipcond  	400					/ If the character is a null, we are done.
+					Jump	    Outp_lanzamiento
+                    Load	    Start_lanzamiento	/ Load the character found at address chptr.
+					Store		Chptr_lanzamiento
+                    Load 		CENTENAT
+                    Add 		ZERO_A
+                    Output
+                    Load 		DECENAT
+                    Add 		ZERO_A
+                    Output
+                    Load 		UNIDADT
+                    Add 		ZERO_A
+                    Output							/ Otherwise, proceed with operation.
+					JUMPI	    print_Lanzamiento	
+Outp_lanzamiento,	Output							/ Output the character.
+					Load	    Chptr_lanzamiento	/ Move pointer to next character.
+					Add	    	ONE			
+					Store	    Chptr_lanzamiento	
+					Jump	    Getch_lanzamiento	
+Chptr_lanzamiento,	Hex 		19C
+Start_lanzamiento,	Hex			19C					/--------------------> Editar memoria .-.
+lanzamiento,		Dec			76  				/ L
+					Dec			97  				/ a
+					Dec			110  				/ n
+					Dec			122  				/ z
+					Dec			97  				/ a
+					Dec			109  				/ m
+					Dec			105  				/ i
+					Dec			101  				/ e
+					Dec			110	 				/ n
+					Dec			116	  				/ t
+					Dec			111 				/ o
+					Dec			032  				/ [space]
+    				Dec 		0 					/[null]
+print_centena,		HEX			16*					/--------------------> Editar memoria .-.
+					Load 		TIROS
+					Subt 		CIEN
+                    Store 		AUXT
+                    Load 		ONE
+                    Store 		CENTENAT
+                    JumpI 		print_centena
+print_juegos, 		HEX 		A					/--------------------> Editar memoria .-.
+JUEGOS_Getch, 		LoadI 		JUEGOS_Chptr
+					Skipcond   	400		
+					Jump	    JUEGOS_Outp
+IfUnidadJUEGOS, 	Load 		JUEGOSU
+    				Subt 		NUEVE_A
+        			Skipcond 	400
+        			Jump 		Else_juegos
+ThenUnidadJUEGOS, 	Load 		JUEGOSD
+					Add 		ONE
+    				Store 		JUEGOSD
+					Output
+					Load 		ZERO_A
+    				Store 		JUEGOSU
+    				Output
+                    Load		start_Juegos
+					store		JUEGOS_Chptr
+    				JumpI 		print_juegos
+Else_juegos, 		Load 		JUEGOSD
+					Output
+					Load 		JUEGOSU
+    				Output
+    				Load    	Enter
+    				Output
+					Load		start_Juegos
+					store		JUEGOS_Chptr
+					JumpI 		print_juegos
+JUEGOS_Outp,		Output			
+					Load    	JUEGOS_Chptr	
+					Add 		ONE		
+					Store   	JUEGOS_Chptr
+					Jump    	JUEGOS_Getch
+JUEGOS_Chptr, 		Hex			1D2					/--------------------> Editar memoria .-.
+start_Juegos,		Hex			1D2
+JUEGOS,				Dec 		10  				/ [Enter]
+					Dec 		10  				/ [Enter]
+					Dec 		74 					/ J
+					Dec 		117 				/ u
+					Dec 		101 				/ e
+					Dec 		103 				/ g
+					Dec 		111 				/ o
+					Dec 		58 					/ :
+					Dec 		032 				/ [Space]
+    				Dec 		0 					/[null]
+JUEGOSD, 			Dec 		48    
+JUEGOSU, 			Dec			48 			  
+COMPARE, 	  		Hex 		69					/--------------------> Editar memoria .-.
+			  		Load		INDEX
+			  		ADD			INDEX2				/TODO: corregir posible error
+			  		STORE		AUX
+			  		LOADI		INDEX			
+			  		SUBT		POSITION 
+			  		SKIPCOND	400 				/ AC = 0
+			  		JUMPI		COMPARE	
+					Load		POSITION
+					Store 		posInicial	
+			  		LOADI		AUX					/Posicion inicial = loadi index; posicion final = Position
+			  		STORE		POSITION
+					STORE		posFinal
+					JNS 		print_especial			/ Mete la posicion de destino en POSITION
+			  		JUMPI		COMPARE
+NUMAL, 		  		HEX			13					/ MEMORIA DEL PRINCIPIO --------------------> Editar memoria .-.
+			  		LOAD		COUNTA				/ LOAD Count into AC
+			  		Subt		ALEATORIO
+			  		SKIPCOND	000					/ Aqui va el if que nos ayude a recorrer de nuevo todo el arreglo
+			  		JNS			Restart				/ LOAD MEM[index] into AC
+        	  		Load 		COUNTA
+        	  		Add 		seed
+        	  		STORE		COUNTA				/ STORE AC into COUNT
+			  		LOADI		INDEXA
+			  		STORE		NumDados
+			  		LOAD		INDEXA
+			  		ADD 		seed
+			  		STORE		INDEXA
+			  		JUMPI		NUMAL				/ JUMP al principio
+Restart,	  		HEX 		1F2					/ LOAD start into A --------------------> Editar memoria .-.
+			  		Load      	ZERO
+			  		Store     	COUNTA
+					Load 		StartA
+					Store 		INDEXA
+			  		JUMPI     	Restart
+print_especial, 	HEX 		1EC					/--------------------> Editar memoria .-.
+IfS, 				Load 		posFinal			/ lo que esta en loadI aux en compare
+					Subt 		posInicial			/ el position 
+					Store 		posDiff
+					Load 		posDiff
+					Skipcond 	800 				//Chequear si es mayor a 0, si es que es mayor salta la siguiente linea
+					Jump 		ElseS				//Empieza el IF x<y
+esc_dibujo_Getch,	LoadI	    escdibujo_Chptr
+					Skipcond   	400		
+					Jump	   	esc_dibujo_Outp
+					Load       	escdibujo_Start
+					Store      	escdibujo_Chptr
+					Jump 		Outesc_dibujo
+esc_dibujo_Outp,	Output			
+					Load	    escdibujo_Chptr
+					Add	   		escdibujo_One
+					Store	    escdibujo_Chptr
+					Jump	    esc_dibujo_Getch
+Outesc_dibujo, 		Load 		ZERO
+					Store 		TempS
+					Store 		DividS
+					Store 		QuotS
+					Store 		LCVS
+					Load 		posFinal 			//Preparar Siguiente Impresion Unicode (POS FINAL)
+					Store 		TempS
+					Store 		DividS
+Loop_escdibujo, 	Load 		TempS
+					Subt 		DivisS
+    				Store 		TempS
+    				Skipcond 	800
+    				Jump 		Out_escdibujo
+    				Load 		QuotS
+    				Add 		ONE
+    				Store 		QuotS
+    				Jump 		Loop_escdibujo
+Out_escdibujo, 		Load 		TempS
+					Skipcond 	400
+    				Jump 		Odd_escdibujo
+    				Jump 		Even_escdibujo
+Even_escdibujo, 	Load 		QuotS
+					Add 		ONE
+    				Store 		DECENAS
+    				Load 		ZERO
+    				Store 		UNIDADS
+    				JumpI 		Fin_posfinalprint
+Odd_escdibujo,		Load 		QuotS				/ load our quotient
+					Store 		DECENAS 			/ print it out //return decenas
+					Load 		TempS				/ load our remainder
+					Add 		DivisS				/ remainder is negative, add back the divisor to get correct value
+					STORE 		UNIDADS          	//Impresion 
+                    Load 		DECENAS
+              		Add 		ZERO_A
+              		Store 		DECENAS
+              		Output
+              		Load 		UNIDADS
+              		Add 		ZERO_A
+              		Store 		UNIDADS
+              		Output
+Fin_posfinalprint,  Load 		posDiff
+esc_text_Getch,		LoadI	    esctext_Chptr
+					Skipcond    400		
+					Jump	    esc_texto_Outp
+					Load        esctext_Start
+					Store       esctext_Chptr
+					Jump 		Outesc_text
+esc_texto_Outp,		Output			
+					Load	    esctext_Chptr
+					Add	   		esctext_One
+					Store	    esctext_Chptr
+					Jump	    esc_text_Getch
+Outesc_text, 		Load 		ZERO
+					Store 		TempS
+					Store 		DividS
+					Store 		QuotS
+					Store 		LCVS
+					JumpI 		print_especial
+ElseS, 				Load 		TempS
+serp_dibujo_Getch,	LoadI	    serpdibujo_Chptr
+					Skipcond    400		
+					Jump	    serp_dibujo_Outp
+					Load        serpdibujo_Start
+					Store       serpdibujo_Chptr
+					Jump 		Outserp_dibujo
+serp_dibujo_Outp,	Output			
+					Load	    serpdibujo_Chptr
+					Add	   	 	serpdibujo_One
+					Store	    serpdibujo_Chptr
+					Jump	    serp_dibujo_Getch
+Outserp_dibujo, 	Load 		ZERO
+					Store 		TempS
+					Store 		DividS
+					Store 		QuotS
+					Store 		LCVS
+					Load 		posFinal 			//Preparar Siguiente Impresion Unicode (POS FINAL)
+					Store 		TempS
+					Store 		DividS
+Loop_serpdibujo, 	Load 		TempS
+					Subt 		DivisS
+    				Store 		TempS
+    				Skipcond 	800
+    				Jump 		Out_serpdibujo
+    				Load 		QuotS
+    				Add 		ONE
+    				Store 		QuotS
+    				Jump 		Loop_serpdibujo
+Out_serpdibujo, 	Load 		TempS
+					Skipcond 	400
+    				Jump 		Odd_serpdibujo
+    				Jump 		Even_serpdibujo
+Even_serpdibujo, 	Load 		QuotS
+					Add 		ONE
+    				Store 		DECENAS
+    				Load 		ZERO
+    				Store 		UNIDADS
+    				JumpI 		Fin_posfinal2print
+Odd_serpdibujo,		Load 		QuotS				/ load our quotient
+					Store		DECENAS 			/ print it out 
+					Load 		TempS				/ load our remainder
+					Add 		DivisS				/ remainder is negative, add back the divisor to get correct value
+					STORE		UNIDADS             //Impresion 
+              		Load 		DECENAS
+              		Add 		ZERO_A
+              		Store 		DECENAS
+              		Output
+              		Load 		UNIDADS
+              		Add 		ZERO_A
+              		Store 		UNIDADS
+              		Output
+Fin_posfinal2print, Load 		posFinal
+serp_text_Getch,	LoadI	    serptext_Chptr
+					Skipcond    400		
+					Jump	    serp_texto_Outp
+					Load        serptext_Start
+					Store       serptext_Chptr
+					Jump 		Outserp_text
+serp_texto_Outp,	Output			
+					Load	   	serptext_Chptr
+					Add	   		serptext_One
+					Store	   	serptext_Chptr
+					Jump	   	serp_text_Getch
+Outserp_text, 		Load 		ZERO
+					Store 		TempS
+					Store 		DividS
+					Store 		QuotS
+					Store 		LCVS
+					JumpI 		print_especial
+posInicial, 		DEC 		56
+posFinal, 			DEC 		2
+posDiff, 			DEC 		0
+TempS,				Dec			0					/ temp for dividend
+DividS,				Dec			0					/ Dividend
+DivisS,				Dec			10					/ Divisor
+QuotS,				Dec			0					/ The Quotient
+LCVS,				Dec			0					/ The loop control variable		
+DECENAS, 			DEC 		0 					/DECENA
+UNIDADS, 			DEC 		0 					/UNIDAD
+escdibujo_One,		Hex			0001
+escdibujo_Chptr,	Hex 		2A0 				/--------------------> Editar memoria .-.
+escdibujo_Start,	Hex 		29F
+print_escdibujo,	Dec 		61 
+					Dec 		61					/=
+					Dec 		61					/=
+					Dec 		61					/=
+					Dec 		61					/=
+					Dec 		61					/=
+					Dec 		61					/=
+					Dec 		0 					/null
+serpdibujo_One,		Hex			0001
+serpdibujo_Chptr, 	Hex			2AB 				/--------------------> Editar memoria .-.
+serpdibujo_Start, 	Hex			2AB  
+print_serpdibujo, 	Dec 		46 					/.
+					Dec 		46					/.
+					Dec 		46					/.
+					Dec 		46					/.
+					Dec 		46					/.
+					Dec 		46					/.
+					Dec 		0 					/null
+esctext_One,		Hex			0001
+esctext_Chptr, 		Hex			2B5					 /--------------------> Editar memoria .-.
+esctext_Start, 		Hex			2B5
+print_esctext, 		Dec 		32					/[space]
+					Dec 		40 					/(
+					Dec 		101					/e
+					Dec 		115					/s
+					Dec 		99 					/c
+					Dec 		97 					/a
+					Dec 		108					/l
+					Dec 		101					/e
+					Dec 		114					/r
+					Dec 		97 					/a
+					Dec 		41 					/)
+					Dec 		0 					/null
+serptext_One,		Hex			0001
+serptext_Chptr, 	Hex			2C4					 /--------------------> Editar memoria .-.
+serptext_Start, 	Hex			2C4
+print_serptext, 	Dec 		32					/[space]
+					Dec 		40 					/(
+					Dec 		115					/s
+					Dec 		101					/e
+					Dec 		114					/r
+					Dec 		112					/p
+					Dec 		105					/i
+					Dec 		101					/e
+					Dec 		110					/n
+					Dec 		116					/t
+					Dec 		101					/e
+					Dec 		41 					/)
+					Dec 		0 					/null
+separacionI, 		HEX 		26  				/ --------------------> Editar memoria .-.
+LoopI,				Load 		Temp				/ load the value of the working dividend
+					Subt 		Divis				/ subtract the divisor
+					Store		Temp				/ store our new value for our working dividend
+					Skipcond 	800					/ if temp is still positive skip next
+					Jump		Out					/ go print result
+					Load		Quot				/ load our quotient
+					Add			ONE					/ add one to the quotient
+					Store		Quot				/ store it again
+					Jump 		LoopI				/ run through the loop again
+Out,				Load		Temp				/ Load our working dividend
+					Skipcond 	400					/ if it is equal to zero skip next line
+					Jump		Odd					/ Jump to our output for evenly divisible number
+					Jump 		Even				/ Jump to the print out section
+Even,				Load		Quot				/ We got an evenly divisible number, load quotient
+					Add			ONE					/ Have to add one since we missed one in our loop above
+    				STORE 		DECENA
+					Load 		ZERO
+    				STORE 		UNIDAD
+					Jump		EndPOSITIONI		/ exit
+Odd,				Load 		Quot				/ load our quotient
+					Store 		DECENA 
+					Load 		Temp				/ load our remainder
+					Add 		Divis				/ remainder is negative, add back the divisor to get correct value
+					STORE 		UNIDAD
+EndPOSITIONI,		Load 		ZERO
+					Store 		Quot
+					Store 		LCV
+					JumpI 		separacionI
+separacionF, 		HEX 		3B  				/ --------------------> Editar memoria .-.
+LoopF,				Load 		TempF				/ load the value of the working dividend
+					Subt 		DivisF				/ subtract the divisor
+					Store		TempF				/ store our new value for our working dividend
+					Skipcond	800					/ if temp is still positive skip next
+					Jump		OutF				/ go print result
+					Load		QuotF				/ load our quotient
+					Add			ONE					/ add one to the quotient
+					Store		QuotF				/ store it again
+					Jump 		LoopF				/ run through the loop again
+OutF,				Load		TempF				/ Load our working dividend
+					Skipcond	400					/ if it is equal to zero skip next line
+					Jump		OddF				/ Jump to our output for evenly divisible number
+					Jump 		EvenF				/ Jump to the print out section
+EvenF,				Load		QuotF				/ We got an evenly divisible number, load quotient
+					Add			ONE					/ Have to add one since we missed one in our loop above
+    				STORE 		DECENAF
+					Load 		ZERO
+    				STORE 		UNIDADF
+					Jump		EndPOSITIONF		/ exit
+OddF,				Load 		QuotF				/ load our quotient
+					Store 		DECENAF 
+					Load 		TempF				/ load our remainder
+					Add 		DivisF				/ remainder is negative, add back the divisor to get correct value
+					STORE 		UNIDADF
+EndPOSITIONF,		Load 		ZERO
+					Store 		QuotF
+					Store 		LCVF
+					JumpI 		separacionF
+Temp,				Dec			4 					/ temp for dividend
+Divid,				Dec			4					/ Dividend
+Divis,				Dec			10					/ Divisor
+Quot,				Dec			0					/ The Quotient
+LCV,				Dec			0					/ The loop control variable		
+DECENA, 			DEC 		0 					/DECENA
+UNIDAD, 			DEC 		0 					/UNIDAD
+ZERO, 				DEC 		0 					/ CERO
+TempF,				Dec			4 					/ temp for dividend
+DividF,				Dec			4					/ Dividend
+DivisF,				Dec			10					/ Divisor
+QuotF,				Dec			0					/ The Quotient
+LCVF,				Dec			0					/ The loop control variable		
+DECENAF, 			DEC 		0 					/DECENA
+UNIDADF, 			DEC 		0 					/UNIDAD
+print_Cien1,		HEX			22					/--------------------> Editar memoria .-.
+					Load 		POSITION
+					Subt 		CIEN
+                    Store 		AUXI
+                    Load 		ONE_A
+                    Output
+                    JumpI 		print_Cien1
+print_Cien2,		HEX			37					/--------------------> Editar memoria .-.
+					Load 		POSITION
+					Subt 		CIEN
+                    Store 		AUXF
+                    Load 		ONE_A
+                    Output
+                    JumpI 		print_Cien2
+INDEX,		  		HEX 		32A				/ Our current memory location --------------------> Editar memoria 
+START,		  		HEX 		32A					/ The memory location of our first value (in hex) --------------------> Editar memoria
+ORIGEN,	      		DEC 		21					/ The first index of our array (used for size)
+              		DEC 		4					/ index 0
+              		DEC 		6					/ index 1
+              		DEC 		12					/ index 2
+              		DEC 		21					/ index 3
+              		DEC 		25					/ index 4
+              		DEC 		33					/ index 5
+              		DEC 		37					/ index 6
+              		DEC 		41					/ index 7
+              		DEC 		48					/ index 8
+              		DEC 		64					/ index 9
+              		DEC 		65					/ index 10
+              		DEC 		67					/ index 11
+              		DEC 		71					/ index 12
+              		DEC 		77					/ index 13
+              		DEC 		79					/ index 14
+              		DEC 		80					/ index 15
+              		DEC 		83					/ index 16
+              		DEC 		93					/ index 17
+              		DEC 		95					/ index 18
+              		DEC 		97					/ index 19
+INDEX2,		  		HEX 		15					/ Our current memory location
+DESTINO,			DEC 		38					/ index 0
+              		DEC 		14					/ index 1
+              		DEC 		27					/ index 2
+              		DEC 		78					/ index 3
+              		DEC 		55					/ index 4
+              		DEC 		51					/ index 5
+              		DEC 		15					/ index 6
+              		DEC 		19					/ index 7
+              		DEC 		9					/ index 8
+              		DEC 		94					/ index 9
+              		DEC 		2					/ index 10
+              		DEC 		88					/ index 11
+              		DEC 		92					/ index 12
+              		DEC 		44					/ index 13
+              		DEC 		22					/ index 14
+              		DEC 		99					/ index 15
+              		DEC 		61					/ index 16
+              		DEC 		53					/ index 17
+              		DEC 		74					/ index 18
+              		DEC 		29					/ index 19
+CountA, 	  		Dec 		0
+INDEXA,				HEX 		358					/--------------------> Editar memoria .-.
+StartA,				HEX 		358
+ALEATORIO,    		DEC 		1000
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		3
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		5
+	 		  		DEC 		3
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		2
+	 		  		DEC 		2
+	 		  		DEC 		3
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		6
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		6
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		2
+	 		  		DEC 		4
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		1
+	 		  		DEC 		6
+	 		  		DEC 		5
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		6
+	 		  		DEC 		4
+	 		  		DEC 		1
+	 		  		DEC 		3
+	 		  		DEC 		4
+CIEN,               Dec			100
+seed,               Dec         0
+TIROSD, 			DEC 		48    
+TIROSU, 			Dec 		48
+CheckDecimal, 		DEC 		9
+NUEVE_A, 			Dec 		58  
+ZERO_A, 			Dec 		48   
+TempT,				Dec			0 					/ temp for dividend
+DividT,				Dec			0					/ Dividend
+DivisT,				Dec			10					/ Divisor
+QuotT,				Dec			0					/ The Quotient
+LCVT,				Dec			0					/ The loop control variable	
+CENTENAT, 			Dec 		0 					/ Centena
+DECENAT, 			Dec 		0 					/DECENA
+UNIDADT, 			Dec 		0 					/UNIDAD
+CheckCentena, 		Dec 		0 					
+COUNT,				DEC 		0
+JUGADA,				DEC 		0
+COUNTA,				DEC 		0
+POSITION, 			DEC 		1
+ORIGEN_I,   		DEC 		0
+ONE,				DEC 		1
+NumDados,			DEC 		0
+Size, 				Dec 		0     				/ X must be less than this
+TIROS, 				Dec 		0       			/ Numero de tiros
+sobrante, 			Dec 		0 
+Enter, 				Dec 		010
+Space, 				Dec 		032
+AUX,				Dec			0
+AUX2,				Dec			0
+AUXI,				DEC 		0
+AUXF,				DEC 		0
+AUXT,				DEC 		0
+ONE_A,				Dec 		49
+NUEVEOCHO, 			Dec 		98
